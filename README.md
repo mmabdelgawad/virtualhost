@@ -5,18 +5,18 @@ Simple bash script file to create, rename or delete Apache virtual hosts on Ubun
 ## Installation
 
 ```bash
-wget -O virtualhost https://raw.githubusercontent.com/mmabdelgawad/virtualhost/master/vhost.sh
+wget -O vhost-apache https://raw.githubusercontent.com/mmabdelgawad/virtualhost/master/vhost-apache.sh
 
-chmod +x /path/to/vhost.sh
+chmod +x /path/to/vhost-apache
 ```
 
 #### Run the script globally
 ```bash
 cd /usr/local/bin/
 
-wget -O virtualhost https://raw.githubusercontent.com/mmabdelgawad/virtualhost/master/vhost.sh
+wget -O vhost-apache https://raw.githubusercontent.com/mmabdelgawad/virtualhost/master/vhost-apache.sh
 
-chmod +x ./vhost.sh
+chmod +x ./vhost-apache
 ```
 
 ## Usage
