@@ -7,7 +7,7 @@ Simple bash script file to create, rename or delete Apache virtual hosts on Ubun
 ```bash
 wget -O vhost-apache https://raw.githubusercontent.com/mmabdelgawad/virtualhost/master/vhost-apache.sh
 
-chmod +x /path/to/vhost-apache
+chmod +x vhost-apache
 ```
 
 #### Run the script globally
@@ -16,18 +16,18 @@ cd /usr/local/bin/
 
 wget -O vhost-apache https://raw.githubusercontent.com/mmabdelgawad/virtualhost/master/vhost-apache.sh
 
-chmod +x ./vhost-apache
+chmod +x vhost-apache
 ```
 
 ## Usage
 
 * Creating new virtual host
 ```bash
-sudo bash ./vhost.sh create [domain] [hosting directory]
+sudo bash vhost-apache create [domain] [hosting directory]
 ```
 
 ```bash
-sudo bash ./vhost.sh create vhost.local /var/www/html/my-website
+sudo bash vhost-apache create vhost.local /var/www/html/my-website
 ```
 
 > Note that while creating new virtual host you need to provide the full path of the website directory like
@@ -38,19 +38,19 @@ sudo bash ./vhost.sh create vhost.local /var/www/html/my-website
 ---
 * Renaming existing virtual host
 ```bash
-sudo bash ./vhost.sh rename [domain] [new domain name]
+sudo bash vhost-apache rename [domain] [new domain name]
 ```
 
 ```bash
-sudo bash ./vhost.sh rename vhost.local my-website.local
+sudo bash vhost-apache rename vhost.local my-website.local
 ```
 ---
 * Deleting existing virtual host
 ```bash
-sudo bash ./vhost.sh delete [domain] [optional - hosting directory]
+sudo bash vhost-apache delete [domain] [optional - hosting directory]
 ```
 
 ```bash
-sudo bash ./vhost.sh delete vhost.local /var/www/html/my-website
+sudo bash vhost-apache delete vhost.local /var/www/html/my-website
 ```
-> Note that removing the hosting directory will remove it **recursively**
+> Note that deleting the hosting directory will delete it **recursively**
