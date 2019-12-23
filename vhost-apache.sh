@@ -7,7 +7,9 @@ domain=$2
 email="webmaster@localhost"
 sitesAvailable="/etc/apache2/sites-available/"
 sitesEnabled="/etc/apache2/sites-enabled/"
+logPath="/var/log/apache2/"
 hosts_file="/etc/hosts"
+apacheStatus=$(systemctl is-active apache2);
 
 # Checking current user
 if [[ "$(whoami)" != 'root' ]]; then
@@ -23,10 +25,8 @@ if [[ "$action" != 'create' ]] && [[ "$action" != 'delete' ]] && [[ "$action" !=
 fi
 
 # Checking if apache2 is running
-if pgrep -x "apache2" >/dev/null; then
-    echo -e "\e[1;32m\nYour current running web server is {apache2}.\n\e[0m"
-else
-    echo -e "\e[1;31m\nApache is not running, start Apache first.\n\e[0m"
+if [[ ! "$apacheStatus" == 'active'  ]]; then
+    echo -e "\e[1;31m\nApache is not running, start Apache first using 'systemctl start apache2'.\n\e[0m"
     exit 0;
 fi
 
@@ -105,8 +105,11 @@ create() {
     fi
 
     # adding this domain to the hosts file
-    ip="127.0.0.1 $domain"
-    echo ${ip} | tee --append "/etc/hosts" > /dev/null 2>&1
+    status=$(grep "\s\+$domain" "/etc/hosts")
+    if  [[ ${status} == "" ]]; then
+        ip="127.0.0.1 $domain"
+        echo ${ip} | tee --append "/etc/hosts" > /dev/null 2>&1
+    fi
 
     enableSiteAndRestartApache ${domain}
 
@@ -133,8 +136,8 @@ delete() {
     sed -e s/^127.0.0.1[^:]*${domain}//g -i "/etc/hosts" > /dev/null 2>&1
 
     # remove log files
-    rm "/var/log/apache2/${domain}-error.log" > /dev/null 2>&1
-    rm "/var/log/apache2/${domain}-access.log" > /dev/null 2>&1
+    rm "${logPath}${domain}-error.log" > /dev/null 2>&1
+    rm "${logPath}${domain}-access.log" > /dev/null 2>&1
 
     # delete hosting directory if it's provided
     if [[ ${hosting_directory} != "" && -d ${hosting_directory} ]]; then
@@ -170,8 +173,8 @@ rename() {
     declare -A CHANGES
     CHANGES[ServerName]="${new_domain_name}"
     CHANGES[ServerAlias]="www.${new_domain_name}"
-    CHANGES[ErrorLog]="/var/log/apache2/${new_domain_name}-error.log"
-    CHANGES[CustomLog]="/var/log/apache2/${new_domain_name}-access.log combined"
+    CHANGES[ErrorLog]="${logPath}${new_domain_name}-error.log"
+    CHANGES[CustomLog]="${logPath}${new_domain_name}-access.log combined"
 
     for key in "${!CHANGES[@]}";
     do
@@ -180,8 +183,8 @@ rename() {
     done
 
     # remove log files
-    rm "/var/log/apache2/${domain}-error.log" > /dev/null 2>&1
-    rm "/var/log/apache2/${domain}-access.log" > /dev/null 2>&1
+    rm "${logPath}${domain}-error.log" > /dev/null 2>&1
+    rm "${logPath}${domain}-access.log" > /dev/null 2>&1
 
     # change domain in /etc/hosts file
     sed -i -e "s/${domain}/${new_domain_name}/g" ${hosts_file}
