@@ -1,6 +1,6 @@
 # Virtual Host
 
-Simple bash script file to create, rename or delete Apache and Nginx virtual hosts on Ubuntu.
+Simple bash script file for Apache and Nginx to create, rename, delete or changing document directory for virtual hosts on Ubuntu.
 
 ## Installation
 
@@ -66,3 +66,12 @@ sudo bash vhost delete [domain] [optional - hosting directory]
 sudo bash vhost delete vhost.local /var/www/html/my-website
 ```
 > Note that deleting the hosting directory will delete it **recursively**
+---
+* Change virtual host document root directory
+```bash
+sudo bash vhost change [domain] [new hosting directory]
+```
+
+```bash
+sudo bash vhost change vhost.local /var/www/html/my-new-website
+```

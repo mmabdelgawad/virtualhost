@@ -18,9 +18,9 @@ if [[ "$(whoami)" != 'root' ]]; then
 fi
 
 # Checking allowed actions
-if [[ "$action" != 'create' ]] && [[ "$action" != 'delete' ]] && [[ "$action" != 'rename' ]]
+if [[ "$action" != 'create' ]] && [[ "$action" != 'delete' ]] && [[ "$action" != 'rename' ]] && [[ "$action" != 'change' ]]
 	then
-		echo "You need to prompt an action (create, delete or rename) - lower case only"
+		echo "You need to prompt an action (create, delete, rename or change) - lower case only"
 		exit 1;
 fi
 
@@ -195,6 +195,38 @@ rename() {
 
 }
 
+change() {
+
+    # check if domain does not exist in sites-available
+    if [[ ! -f ${sitesAvailable}${domain}.conf ]]; then
+        echo -e "\e[1;31m\nVirtual Host {${domain}} Does not Exist.\n\e[0m"
+        exit
+    fi
+
+    # Getting new root directory
+    while [[ "$new_root_directory" == "" ]]
+    do
+        echo -e "\nChange root directory to : "
+        read new_root_directory
+    done
+
+    # change document root and directory
+    declare -A CHANGES
+
+    CHANGES[DocumentRoot]="${new_root_directory}"
+    CHANGES[<Directory]="${new_root_directory}>"
+
+    for key in "${!CHANGES[@]}";
+    do
+        lineNo=$(grep -n "${key}[[:space:]]*/[[:alpha:]]" "${sitesAvailable}${domain}.conf" | cut -d: -f1)
+        sed -i "${lineNo}s:.*: \t ${key} ${CHANGES[$key]}:" "${sitesAvailable}${domain}.conf"
+    done
+
+    systemctl reload apache2
+
+    echo -e "\e[1;32m\nVirtual Host {${domain}} Root Directory Changed To {${new_root_directory}}.\n\e[0m"
+}
+
 if [[ "$action" == 'create' ]] # Creating new domain
 then
 
@@ -215,5 +247,12 @@ then
     new_domain_name=$3
 
     rename
+
+elif [[ "$action" == 'change' ]] # Change root directory of existing domain
+then
+
+    new_root_directory=$3
+
+    change
 
 fi
