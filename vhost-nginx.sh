@@ -4,7 +4,6 @@
 action=$1
 domain=$2
 
-email="webmaster@localhost"
 sitesAvailable="/etc/nginx/sites-available/"
 sitesEnabled="/etc/nginx/sites-enabled/"
 logPath="/var/log/nginx/"
