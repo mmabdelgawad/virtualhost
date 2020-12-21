@@ -9,7 +9,7 @@ sitesEnabled="/etc/nginx/sites-enabled/"
 logPath="/var/log/nginx/"
 hosts_file="/etc/hosts"
 nginxStatus=$(systemctl is-active nginx);
-php_version=$(php -r "echo PHP_VERSION;" | grep --only-matching --perl-regexp "7.\d+")
+php_version=$(php -v | tac | tail -n 1 | cut -d " " -f 2 | cut -c 1-3)
 
 # Checking current user
 if [[ "$(whoami)" != 'root' ]]; then
